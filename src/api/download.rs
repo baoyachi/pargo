@@ -1,7 +1,8 @@
-use actix_web::{HttpRequest,get};
+use actix_web::{HttpRequest, get, web};
 use crate::api::error::{ApiErr, ApiResult};
 
-#[get("/")]
-pub async fn index(_req: HttpRequest) -> ApiResult<String> {
+#[get("/api/v1/crates/{crate}/{version}/download")]
+pub async fn download(path: web::Path<(String, String)>) -> ApiResult<String> {
+    info!("{:?}", path);
     Ok("Hello from the index page!".to_string())
 }

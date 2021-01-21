@@ -1,8 +1,8 @@
 use actix_web::{web, App, HttpRequest, HttpServer, Responder, HttpResponse};
-use crate::api::download::index;
+use crate::api::download::download;
 
 fn router(cfg: &mut web::ServiceConfig) {
-    cfg.service(index);
+    cfg.service(download);
 }
 
 pub async fn start_server() -> std::io::Result<()> {
