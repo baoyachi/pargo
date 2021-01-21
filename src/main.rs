@@ -16,6 +16,8 @@ extern crate serde_json;
 mod api;
 mod err;
 mod util;
+mod auth;
+mod config;
 
 use crate::api::server::start_server;
 use crate::util::log::init_log;
@@ -23,7 +25,7 @@ use crate::util::log::init_log;
 #[actix_web::main]
 async fn main() -> anyhow::Result<()> {
     init_conf()?;
-    start_server().await;
+    start_server().await?;
     Ok(())
 }
 
