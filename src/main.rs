@@ -10,12 +10,15 @@ extern crate shadow_rs;
 #[macro_use]
 extern crate serde_derive;
 
+#[macro_use]
+extern crate serde_json;
+
 mod api;
 mod err;
 mod util;
 
-use crate::util::log::init_log;
 use crate::api::server::start_server;
+use crate::util::log::init_log;
 
 #[actix_web::main]
 async fn main() -> anyhow::Result<()> {
@@ -27,6 +30,3 @@ async fn main() -> anyhow::Result<()> {
 fn init_conf() -> anyhow::Result<()> {
     init_log()
 }
-
-
-
