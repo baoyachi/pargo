@@ -15,6 +15,13 @@ build = "build.rs"
 [dependencies]
 actix-web = "3.3.2"
 shadow-rs = "0.5"
+anyhow = "1"
+log = "0.4"
+simple-log = "1"
+serde="1"
+serde_derive="1"
+serde_json="1"
+
 
 [build-dependencies]
 shadow-rs = "0.5"
