@@ -33,12 +33,14 @@ pub async fn new(
         bytes.extend_from_slice(&item.unwrap());
     }
 
-    let path = Path::new("test_download/test.crates");
+    let path = Path::new("rust_demo.crates");
     let mut file = fs::OpenOptions::new()
         .create_new(true)
         .write(true)
         .open(&path).unwrap();
     file.write_all(bytes.as_ref()).unwrap();
+
+
 
     Ok(HttpResponse::Ok().finish())
 }
