@@ -1,13 +1,14 @@
 use crate::api::download::download;
-use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer, Responder};
+use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer, Responder, http};
 use crate::api::error::ApiResult;
 use actix_web::http::StatusCode;
-use crate::api::new::new;
+use crate::api::new::new_crate;
 use actix_web::middleware::Logger;
+use actix_web::error::InternalError;
 
 fn router(cfg: &mut web::ServiceConfig) {
     cfg.service(download)
-    .service(new);
+    .service(new_crate);
 }
 
 async fn not_found(req:HttpRequest) -> ApiResult<HttpResponse> {
@@ -22,6 +23,18 @@ pub async fn start_server() -> std::io::Result<()> {
 
     HttpServer::new(||
         App::new()
+            .data(
+                // change query extractor configuration
+                web::QueryConfig::default().error_handler(|err, req| {
+                    // <- create custom error response
+                    error!("QueryConfig err:{:?}", err);
+
+                    let resp = HttpResponse::BadRequest()
+                        .set_header(http::header::CONTENT_TYPE, "application/json")
+                        .body(json!({"error":format!("{}",err)}));
+                    InternalError::from_response(err, resp).into()
+                }),
+            )
             .configure(router)
             .wrap(Logger::default())
             .default_service(web::route().to(not_found))
