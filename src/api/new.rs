@@ -75,8 +75,8 @@ pub async fn new_crate(
         bytes.extend_from_slice(&item?);
     }
     let mut cursor = Cursor::new(bytes);
-    let crate_size = cursor.read_u32::<LittleEndian>()?;
-    let mut crate_buf = vec![0u8; crate_size as usize];
+    let metadata_len = cursor.read_u32::<LittleEndian>()?;
+    let mut crate_buf = vec![0u8; metadata_len as usize];
     cursor.read_exact(&mut crate_buf)?;
     let new_crate: NewCrate = serde_json::from_slice(&crate_buf)?;
 
@@ -85,6 +85,9 @@ pub async fn new_crate(
     cursor.read_exact(&mut file_buf)?;
     let hash = hex::encode(sha2::Sha256::digest(&file_buf));
     info!("hash:{}", hash);
+
+
+
 
 
     let path = Path::new("rust_demo.crates");

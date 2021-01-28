@@ -18,6 +18,8 @@ mod err;
 mod util;
 mod auth;
 mod config;
+mod index;
+mod storage;
 
 use crate::api::server::start_server;
 use crate::util::log::init_log;
