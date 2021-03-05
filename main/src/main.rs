@@ -14,12 +14,10 @@ extern crate serde_derive;
 extern crate serde_json;
 
 mod api;
-mod err;
-mod util;
-mod auth;
 mod config;
+mod err;
 mod index;
-mod storage;
+mod util;
 
 use crate::api::server::start_server;
 use crate::util::log::init_log;

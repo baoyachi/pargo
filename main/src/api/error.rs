@@ -1,8 +1,8 @@
-use actix_web::error::{ResponseError, PayloadError};
+use actix_web::error::{PayloadError, ResponseError};
 use actix_web::http::{header, StatusCode};
 use actix_web::HttpResponse;
-use std::fmt;
 use anyhow::Error;
+use std::fmt;
 
 pub type ApiResult<T> = std::result::Result<T, ApiErr>;
 
@@ -13,7 +13,9 @@ pub struct ApiErr {
 
 impl ApiErr {
     pub fn new<E: Into<String>>(err: E) -> Self {
-        ApiErr { errors: vec![ErrDetail::new(err)] }
+        ApiErr {
+            errors: vec![ErrDetail::new(err)],
+        }
     }
 
     pub fn push<E: Into<String>>(&mut self, err: E) {

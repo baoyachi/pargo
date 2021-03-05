@@ -38,7 +38,6 @@ pub struct NewCrateDependency {
     pub explicit_name_in_toml: Option<String>,
 }
 
-
 // 2021-01-22 01:43:37:654200000 [INFO] <actix_server::builder:263>:Starting 4 workers
 // 2021-01-22 01:43:37:655028000 [INFO] <actix_server::builder:277>:Starting "actix-web-service-127.0.0.1:8080" service on 127.0.0.1:8080
 // 2021-01-22 01:49:13:270352000 [INFO] <pargo::api::server:11>:
@@ -53,23 +52,19 @@ pub struct NewCrateDependency {
 //
 //
 
-use actix_web::{HttpRequest, HttpResponse, put, web, HttpMessage};
 use crate::api::error::ApiResult;
-use std::fs;
-use std::io::{Write, Read};
-use std::path::Path;
+use actix_web::{put, web, HttpMessage, HttpRequest, HttpResponse};
 use byteorder::{LittleEndian, ReadBytesExt};
-use std::collections::BTreeMap;
 use futures_core::stream::Stream;
 use futures_util::StreamExt;
+use std::collections::BTreeMap;
+use std::fs;
 use std::io::Cursor;
-use sha2::Digest;
+use std::io::{Read, Write};
+use std::path::Path;
 
 #[put("/api/v1/crates/new")]
-pub async fn new_crate(
-    req: HttpRequest,
-    mut body: web::Payload,
-) -> ApiResult<HttpResponse> {
+pub async fn new_crate(req: HttpRequest, mut body: web::Payload) -> ApiResult<HttpResponse> {
     let mut bytes = web::BytesMut::new();
     while let Some(item) = body.next().await {
         bytes.extend_from_slice(&item?);
@@ -81,21 +76,18 @@ pub async fn new_crate(
     let new_crate: NewCrate = serde_json::from_slice(&crate_buf)?;
 
     let file_size = cursor.read_u32::<LittleEndian>()?;
-    let mut file_buf = vec![0u8; file_size as usize];
-    cursor.read_exact(&mut file_buf)?;
-    let hash = hex::encode(sha2::Sha256::digest(&file_buf));
+    let mut file_bytes = vec![0u8; file_size as usize];
+    cursor.read_exact(&mut file_bytes)?;
+    let hash = sha256::digest_bytes(&file_bytes);
     info!("hash:{}", hash);
-
-
-
-
 
     let path = Path::new("rust_demo.crates");
     let mut file = fs::OpenOptions::new()
         .create_new(true)
         .write(true)
-        .open(&path).unwrap();
-    file.write_all(file_buf.as_ref()).unwrap();
+        .open(&path)
+        .unwrap();
+    file.write_all(file_bytes.as_ref()).unwrap();
 
     Ok(HttpResponse::Ok().finish())
 }

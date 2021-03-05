@@ -1,6 +1,6 @@
 use crate::api::error::{ApiErr, ApiResult};
-use actix_web::{get, web, HttpRequest, HttpResponse};
 use actix_web::body::ResponseBody;
+use actix_web::{get, web, HttpRequest, HttpResponse};
 use std::fs;
 
 #[get("/api/v1/crates/{crate}/{version}/download")]
